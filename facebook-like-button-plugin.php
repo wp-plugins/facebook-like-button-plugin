@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.0
+ * Version: 1.1
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -19,15 +19,21 @@ function facebook_like_button_plugin_output($out = '') {
 	
 	if (!$options['show_on_pages'] && is_page()) return $out;
 	if (!$options['show_on_home'] && is_home()) return $out;
-$out .= 
-	'<p><iframe src="http://www.facebook.com/plugins/like.php?href='.urlencode(get_permalink($post->id)).
-	'&amp;layout=' .$options['layout']. 
-	'&amp;'. ($options['show_faces'] ? 'show_faces=true' : '') .
-	'&amp;width=' . $options['width'] .
-	'&amp;action=' . $options['action'] .
-	(strlen($options['font']) > 0 ? '&amp;font=' . $options['font'] : '') .
-	'&amp;colorscheme=' . $options['colorscheme'] .
-	'" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:'.$options['width'].'px;'.($options['height'] ? 'height:'.$options['height'].'px;': '').'"></iframe></p>';
+	$iframe = 
+		'<iframe src="http://www.facebook.com/plugins/like.php?href='.urlencode(get_permalink($post->id)).
+		'&amp;layout=' .$options['layout']. 
+			'&amp;'. ($options['show_faces'] ? 'show_faces=true' : '') .
+			'&amp;width=' . $options['width'] .
+			'&amp;action=' . $options['action'] .
+			(strlen($options['font']) > 0 ? '&amp;font=' . $options['font'] : '') .
+			'&amp;colorscheme=' . $options['colorscheme'] .
+			'" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:'.$options['width'].'px;'.($options['height'] ? 'height:'.$options['height'].'px;': '').($options['iframe_style'] ? $options['iframe_style'] : '').'"></iframe>';
+	
+	if ($options['position'] == 'top') {
+		$out = $iframe . $out;
+	} else {
+		$out .= $iframe;
+	}
 		
 	return $out;
 }
@@ -47,13 +53,14 @@ function facebook_like_button_plugin_wp_head() {
 function facebook_like_button_plugin_defaults($options) {
 	if (!isset($options['show_on_pages'])) $options['show_on_pages'] = false;	
 	if (!isset($options['show_on_home'])) $options['show_on_home'] = false;	
-	
 	if (!isset($options['show_faces'])) $options['show_faces'] = true;
 	if (!$options['layout']) $options['layout'] = 'standard';
 	if (!$options['width']) $options['width'] = '450';
 	if (!$options['action']) $options['action'] = 'like';
 	if (!$options['colorscheme']) $options['colorscheme'] = 'light';
-
+	if (!$options['position']) $options['position'] = 'bottom';
+	if (!isset($options['iframe_style'])) $options['iframe_style'] = 'margin-top:5px;';		
+	
 	return $options;
 }
 
@@ -71,6 +78,9 @@ function facebook_like_button_plugin_options() {
 		$submitted_options['action'] = stripslashes($_POST["action"]);
 		$submitted_options['font'] = stripslashes($_POST["font"]);
 		$submitted_options['colorscheme'] = stripslashes($_POST["colorscheme"]);
+		$submitted_options['position'] = stripslashes($_POST["position"]);
+		$submitted_options['iframe_style'] = stripslashes($_POST["iframe_style"]);
+				
 		update_option('facebook_like_button_plugin_options', serialize($submitted_options));
 	}
 	
@@ -96,6 +106,16 @@ function facebook_like_button_plugin_options() {
 				</dt>
 					<dd>
 						<input name="show_on_pages" id="param_show_on_pages" value="true" '.($options['show_on_pages'] ? 'checked="1"' : '').' type="checkbox"><label for="param_show_on_pages">Show the button on pages?</label>					
+					</dd>
+				<dt>
+					Position
+				</dt>
+					<dd>
+						<select name="position">
+							<option value="bottom" '. ($options['position'] == 'bottom' ? 'selected="1"' : '') . '>bottom</option>
+							<option value="top" '. ($options['position'] == 'top' ? 'selected="1"' : '') . '>top</option>
+						</select>
+						<span>Where to display the button in relation to Post/Page.</span>
 					</dd>
 			</dl>
 			
@@ -129,7 +149,7 @@ function facebook_like_button_plugin_options() {
 				</dt>
 					<dd>
 						<input name="height" id="param_height" value="'.$options['height'].'" class="small-text" type="text">
-						<span>the height in pixels. If you want to show faces you probably want to leave this alone, otherwise 30 is a good height.</span>
+						<span>the height in pixels. If you want to show faces don\'t make this to small, otherwise 30 is a good height.</span>
 					</dd>
 				<dt>
 					<label for="param_action">Verb to display</label>
@@ -166,6 +186,13 @@ function facebook_like_button_plugin_options() {
 						</select>
 						<span>The color scheme of the plugin.</span>
 					</dd>
+				<dt>
+					<label for="param_iframe_style">CSS style</label>
+				</dt>
+					<dd>
+						<input name="iframe_style" id="param_iframe_style" value="'.$options['iframe_style'].'" class="regular-text" type="text">
+						<span>Extra css styling for the iframe.</span>
+					</dd>					
 			</dl>
 			<p class="submit">
 				<input type="submit" name="fb_like_button_submit" value="Update Options &raquo;" />
