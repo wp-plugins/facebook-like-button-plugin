@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=marti
 Tags: facebook, like, socialwidget, social, button
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.1
+Stable tag: 1.2
 
 The new Facebook Like Button. Add and customize the behavior and appearance to you likings.
 
