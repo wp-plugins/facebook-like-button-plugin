@@ -10,8 +10,13 @@ The new Facebook Like Button. Add and customize the behavior and appearance to y
 
 == Description ==
 
+Add the new Facebook Like Button to your wordpress blog with ease.
+Fully configurable and customizable to your likings.
+Configure where you want it to be visible or you can include it on single post with shortcode.
+
+If you don't know what the Facebook Like Button is, here is how Facebook describes it:
 The Like button enables users to make connections to your pages and share content back to their friends on Facebook with one click. Since the content is hosted by Facebook, the button can display personalized content whether or not the user has logged into your site. For logged-in Facebook users, the button is personalized to highlight friends who have also liked the page.
-More info at  http://developers.facebook.com/docs/reference/plugins/like
+
 == Installation ==
 
 1. Download the installation zip file and unzip leaving the directory structure in tact.
@@ -19,12 +24,43 @@ More info at  http://developers.facebook.com/docs/reference/plugins/like
 3. Activate the Facebook Like Button plugin from the 'Plugins' menu.
 4. Choose customization on the plugin menu "Facebook like button"
 
+== Shortcode syntax ==
+
+= Example =
+
+[fb_like_button_standard] - shows the button in standard layout.
+
+[fb_like_button_count] - shows the button in button_count layout.
+
+= Example with optional parameters =
+
+[fb_like_button_count show_faces="1" action="like" font="arial" iframe_style="margin:10px;"]
+
+= Optional parameters: =
+
+* show_faces = boolean (1 / 0) 
+* width = numeric, width in pixels
+* height = numeric, height in pixels
+* action = (like / recommend), Verb to display
+* font = (arial / lucida grande / segoe ui / tahoma / trebuchet ms / verdana)
+* colorscheme = (light / dark)
+* iframe_style = custom css style for the iframe
+
+
+If no optional parameters are used it will use the values from your saved configuration.
+
 == Screenshots ==
 
 1. Options
 
 == Changelog ==
 
+= 1.2 =
+* Added shortcode [fb_like_button_standard] and [fb_like_button_count]
+* Added option to _not_ show on single posts so you can add it manually on pages and posts with shortcode
+* Added new meta tag og:site_name
+* Added ability to suppress the button on post with custom_field "facebook_like_button" with value "suppress"
+ 
 = 1.1 =
 * Added param to set position top or bottom in relation to the content.
 * Added param to set extra css style to the iframe.
@@ -35,6 +71,12 @@ More info at  http://developers.facebook.com/docs/reference/plugins/like
 
 == Upgrade Notice ==
 
+= 1.2 =
+* Added shortcode [fb_like_button_standard] and [fb_like_button_count]
+* Added option to _not_ show on single posts so you can add it manually on pages and posts with shortcode
+* Added new meta tag og:site_name
+* Added ability to suppress the button on post with custom_field "facebook_like_button" with value "suppress"
+
 = 1.1 =
 * Added param to set position top or bottom in relation to the content.
 * Added param to set extra css style to the iframe.
@@ -42,5 +84,9 @@ More info at  http://developers.facebook.com/docs/reference/plugins/like
 
 
 == Frequently Asked Questions ==
+
+= How do I turn off the button on a single post? =
+
+Give the post a [custom field](http://codex.wordpress.org/Custom_Fields) with the key "facebook_like_button", and the value "suppress". You can do this for as many posts as you want. If you remove the custom field, the button will re-appear on that post.
 
 For any questions, comments or suggestions regarding the plugin please visit http://www.martinj.net

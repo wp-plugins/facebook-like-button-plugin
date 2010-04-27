@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.1
+ * Version: 1.2
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -12,22 +12,48 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+function facebook_like_button_plugin_sc_standard($atts) {
+	return facebook_like_button_plugin_shortcode('standard', $atts);
+}
+
+function facebook_like_button_plugin_sc_count($atts) {
+	return facebook_like_button_plugin_shortcode('button_count', $atts);
+}
+
+function facebook_like_button_plugin_shortcode($layout, $atts) {
+	global $post;
+	$options = unserialize(get_option('facebook_like_button_plugin_options'));
+	$atts['layout'] = $layout;
+	$options = shortcode_atts(facebook_like_button_plugin_defaults($options), $atts);
+	return facebook_like_button_plugin_create_iframe($options, urlencode(get_permalink($post->id)));	
+}
+
+function facebook_like_button_plugin_create_iframe($options, $url) {
+	return 
+		'<iframe src="http://www.facebook.com/plugins/like.php?href='.$url.
+		'&amp;layout=' .$options['layout']. 
+		'&amp;'. ($options['show_faces'] ? 'show_faces=true' : '') .
+		'&amp;width=' . $options['width'] .
+		'&amp;action=' . $options['action'] .
+		(strlen($options['font']) > 0 ? '&amp;font=' . $options['font'] : '') .
+		'&amp;colorscheme=' . $options['colorscheme'] .
+		'" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:'.$options['width'].'px;'.($options['height'] ? 'height:'.$options['height'].'px;': '').($options['iframe_style'] ? $options['iframe_style'] : '').'"></iframe>';	
+}
+
 function facebook_like_button_plugin_output($out = '') {
 	global $post;
+
+	$custom_fields = get_post_custom($post->ID);
+	if (isset($custom_fields['facebook_like_button']) && in_array('suppress', $custom_fields['facebook_like_button']))
+		return $out;
+
 	$options = unserialize(get_option('facebook_like_button_plugin_options'));
 	$options = facebook_like_button_plugin_defaults($options);			
 	
 	if (!$options['show_on_pages'] && is_page()) return $out;
 	if (!$options['show_on_home'] && is_home()) return $out;
-	$iframe = 
-		'<iframe src="http://www.facebook.com/plugins/like.php?href='.urlencode(get_permalink($post->id)).
-		'&amp;layout=' .$options['layout']. 
-			'&amp;'. ($options['show_faces'] ? 'show_faces=true' : '') .
-			'&amp;width=' . $options['width'] .
-			'&amp;action=' . $options['action'] .
-			(strlen($options['font']) > 0 ? '&amp;font=' . $options['font'] : '') .
-			'&amp;colorscheme=' . $options['colorscheme'] .
-			'" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:'.$options['width'].'px;'.($options['height'] ? 'height:'.$options['height'].'px;': '').($options['iframe_style'] ? $options['iframe_style'] : '').'"></iframe>';
+	if (!$options['show_on_posts'] && is_single()) return $out;
+	$iframe = facebook_like_button_plugin_create_iframe($options, urlencode(get_permalink($post->id)));
 	
 	if ($options['position'] == 'top') {
 		$out = $iframe . $out;
@@ -41,16 +67,13 @@ function facebook_like_button_plugin_output($out = '') {
 function facebook_like_button_plugin_wp_head() {
 	global $post;
 	if (is_home()) return;
-
-	$options = unserialize(get_option('facebook_like_button_plugin_options'));
-	$options = facebook_like_button_plugin_defaults($options);			
 	
-	if (!$options['show_on_pages'] && $post->post_type == 'page') return;
-	
+	echo '<meta property="og:site_name" content="'.get_bloginfo('name').'"/>';
 	echo '<meta property="og:title" content="'.$post->post_title.'" />';
 }
 
 function facebook_like_button_plugin_defaults($options) {
+	if (!isset($options['show_on_posts'])) $options['show_on_posts'] = true;	
 	if (!isset($options['show_on_pages'])) $options['show_on_pages'] = false;	
 	if (!isset($options['show_on_home'])) $options['show_on_home'] = false;	
 	if (!isset($options['show_faces'])) $options['show_faces'] = true;
@@ -68,6 +91,7 @@ function facebook_like_button_plugin_options() {
 	if ($_POST["fb_like_button_submit"]) {
 		
 		$submitted_options = array();		
+		$submitted_options['show_on_posts'] = stripslashes($_POST["show_on_posts"]);
 		$submitted_options['show_on_pages'] = stripslashes($_POST["show_on_pages"]);		
 		$submitted_options['show_on_home'] = stripslashes($_POST["show_on_home"]);		
 		
@@ -106,6 +130,12 @@ function facebook_like_button_plugin_options() {
 				</dt>
 					<dd>
 						<input name="show_on_pages" id="param_show_on_pages" value="true" '.($options['show_on_pages'] ? 'checked="1"' : '').' type="checkbox"><label for="param_show_on_pages">Show the button on pages?</label>					
+					</dd>
+				<dt>
+					Show on Posts
+				</dt>
+					<dd>
+						<input name="show_on_posts" id="param_show_on_posts" value="true" '.($options['show_on_posts'] ? 'checked="1"' : '').' type="checkbox"><label 	for="param_show_on_posts">Show in posts?</label>					
 					</dd>
 				<dt>
 					Position
@@ -210,4 +240,8 @@ function add_facebook_like_button_plugin_submenu() {
 add_action('admin_menu', 'add_facebook_like_button_plugin_submenu');
 add_action('the_content', 'facebook_like_button_plugin_output', 99);
 add_action('wp_head', 'facebook_like_button_plugin_wp_head');
+
+add_shortcode('fb_like_button_standard', 'facebook_like_button_plugin_sc_standard');
+add_shortcode('fb_like_button_count', 'facebook_like_button_plugin_sc_count');
+
 ?>
