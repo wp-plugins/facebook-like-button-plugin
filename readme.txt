@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=marti
 Tags: facebook, like, socialwidget, social, button
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.2
+Stable tag: 1.3
 
 The new Facebook Like Button. Add and customize the behavior and appearance to you likings.
 
@@ -44,7 +44,7 @@ The Like button enables users to make connections to your pages and share conten
 * action = (like / recommend), Verb to display
 * font = (arial / lucida grande / segoe ui / tahoma / trebuchet ms / verdana)
 * colorscheme = (light / dark)
-* iframe_style = custom css style for the iframe
+* iframe_style = custom css style for iframe/xfbml
 
 
 If no optional parameters are used it will use the values from your saved configuration.
@@ -54,6 +54,15 @@ If no optional parameters are used it will use the values from your saved config
 1. Options
 
 == Changelog ==
+
+= 1.3 =
+* Added ability to choose XFBML instead of iframe.
+* Added headers for FB profile/application id.
+* Added thumbnail meta if a post has a thumbnail.
+* Moved the setting link to "Settings" group.
+* Added link in plugins listing to settings.
+* Added namespaces for opengraph and XFBML in html element.
+* Added language setting for XFBML output
 
 = 1.2 =
 * Added shortcode [fb_like_button_standard] and [fb_like_button_count]
@@ -70,6 +79,17 @@ If no optional parameters are used it will use the values from your saved config
 * First release
 
 == Upgrade Notice ==
+
+= 1.3 =
+XFBML output gives the user a comment dialog when clicking the like button.
+
+* Added ability to choose XFBML instead of iframe.
+* Added headers for FB profile/application id.
+* Added thumbnail meta if a post has a thumbnail.
+* Moved the setting link to "Settings" group.
+* Added link in plugins listing to settings.
+* Added namespaces for opengraph and XFBML in html element.
+* Added language setting for XFBML output
 
 = 1.2 =
 * Added shortcode [fb_like_button_standard] and [fb_like_button_count]
@@ -88,5 +108,11 @@ If no optional parameters are used it will use the values from your saved config
 = How do I turn off the button on a single post? =
 
 Give the post a [custom field](http://codex.wordpress.org/Custom_Fields) with the key "facebook_like_button", and the value "suppress". You can do this for as many posts as you want. If you remove the custom field, the button will re-appear on that post.
+
+= Why doesn't the comment form show when I use XFBML? =
+
+Make sure you have added a Facebook App ID.
+If you don't have one you can create one [here](http://www.facebook.com/developers/apps.php)
+Make sure the "Connect URL" in the Facebook Application Connect Settings has the same url as your wordpress site.
 
 For any questions, comments or suggestions regarding the plugin please visit http://www.martinj.net
