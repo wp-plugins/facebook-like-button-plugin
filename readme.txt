@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=marti
 Tags: facebook, like, socialwidget, social, button
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.3
+Stable tag: 1.3.1
 
 The new Facebook Like Button. Add and customize the behavior and appearance to you likings.
 
@@ -55,6 +55,9 @@ If no optional parameters are used it will use the values from your saved config
 
 == Changelog ==
 
+= 1.3.1 =
+* Added option to show/hide button on Archive pages.
+
 = 1.3 =
 * Added ability to choose XFBML instead of iframe.
 * Added headers for FB profile/application id.
@@ -79,6 +82,19 @@ If no optional parameters are used it will use the values from your saved config
 * First release
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+* Added option to show/hide button on Archive pages.
+
+XFBML output gives the user a comment dialog when clicking the like button.
+
+* Added ability to choose XFBML instead of iframe.
+* Added headers for FB profile/application id.
+* Added thumbnail meta if a post has a thumbnail.
+* Moved the setting link to "Settings" group.
+* Added link in plugins listing to settings.
+* Added namespaces for opengraph and XFBML in html element.
+* Added language setting for XFBML output
 
 = 1.3 =
 XFBML output gives the user a comment dialog when clicking the like button.

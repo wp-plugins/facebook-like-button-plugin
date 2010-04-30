@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.3
+ * Version: 1.3.1
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -68,10 +68,14 @@ function facebook_like_button_plugin_output($out = '') {
 
 	$options = unserialize(get_option('facebook_like_button_plugin_options'));
 	$options = facebook_like_button_plugin_defaults($options);			
-	
+
 	if (!$options['show_on_pages'] && is_page()) return $out;
 	if (!$options['show_on_home'] && is_home()) return $out;
 	if (!$options['show_on_posts'] && is_single()) return $out;
+	if (!$options['show_on_archive'] && is_archive()) return $out;
+	
+	if (!$options['show_on_posts'] && !$options['show_on_pages'] && !$options['show_on_home'] && !$options['show_on_archive']) return $out;
+
 	
 	if ($options['output_type'] == 'xfbml') {
 		$iframe = facebook_like_button_plugin_create_xfbml($options, get_permalink($post->id));
@@ -143,6 +147,8 @@ function facebook_like_button_plugin_defaults($options) {
 	if (!isset($options['show_on_posts'])) $options['show_on_posts'] = true;	
 	if (!isset($options['show_on_pages'])) $options['show_on_pages'] = false;	
 	if (!isset($options['show_on_home'])) $options['show_on_home'] = false;	
+	if (!isset($options['show_on_archive'])) $options['show_on_archive'] = false;
+	
 	if (!isset($options['show_faces'])) $options['show_faces'] = true;
 	if (!isset($options['output_type'])) $options['output_type'] = 'iframe';
 	if (!isset($options['locale'])) $options['locale'] = 'en_US';
@@ -162,7 +168,8 @@ function facebook_like_button_plugin_options() {
 		$submitted_options = array();		
 		$submitted_options['show_on_posts'] = stripslashes($_POST["show_on_posts"]);
 		$submitted_options['show_on_pages'] = stripslashes($_POST["show_on_pages"]);		
-		$submitted_options['show_on_home'] = stripslashes($_POST["show_on_home"]);		
+		$submitted_options['show_on_home'] = stripslashes($_POST["show_on_home"]);
+		$submitted_options['show_on_archive'] = stripslashes($_POST["show_on_archive"]);
 		$submitted_options['fb_admins'] = stripslashes($_POST["fb_admins"]);
 		$submitted_options['fb_app_id'] = stripslashes($_POST["fb_app_id"]);
 		$submitted_options['output_type'] = stripslashes($_POST["output_type"]);
@@ -209,6 +216,12 @@ function facebook_like_button_plugin_options() {
 				</dt>
 					<dd>
 						<input name="show_on_posts" id="param_show_on_posts" value="true" '.($options['show_on_posts'] ? 'checked="1"' : '').' type="checkbox"><label 	for="param_show_on_posts">Show in posts?</label>					
+					</dd>
+				<dt>
+					Show on Archive
+				</dt>
+					<dd>
+						<input name="show_on_archive" id="param_show_on_archive" value="true" '.($options['show_on_archive'] ? 'checked="1"' : '').' type="checkbox"><label 	for="param_show_on_posts">Show on archive pages (Category, Tag, Author and Date based pages)?</label>					
 					</dd>
 				<dt>
 					Position
