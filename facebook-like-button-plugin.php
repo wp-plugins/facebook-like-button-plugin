@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -65,7 +65,7 @@ function facebook_like_button_plugin_output($out = '') {
 	$custom_fields = get_post_custom($post->ID);
 	if (isset($custom_fields['facebook_like_button']) && in_array('suppress', $custom_fields['facebook_like_button']))
 		return $out;
-
+	
 	$options = unserialize(get_option('facebook_like_button_plugin_options'));
 	$options = facebook_like_button_plugin_defaults($options);			
 
@@ -122,9 +122,10 @@ function facebook_like_button_plugin_wp_footer() {
 
 function facebook_like_button_plugin_wp_head() {
 	global $post;
-	if (is_home()) return;
 	
 	$options = unserialize(get_option('facebook_like_button_plugin_options'));
+	$options = facebook_like_button_plugin_defaults($options);
+	
 	if ($options['fb_admins']) {
 		echo '<meta property="fb:admins" content="'.$options['fb_admins'].'"/>';		
 	}
@@ -133,6 +134,12 @@ function facebook_like_button_plugin_wp_head() {
 	}
 	
 	echo '<meta property="og:site_name" content="'.get_bloginfo('name').'"/>';
+
+	if (is_home()) {
+		echo '<meta property="og:type" content="'.$options['site_og_type'].'"/>';
+		return;	
+	} 
+	
 	echo '<meta property="og:title" content="'.$post->post_title.'" />';
 
 	if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
@@ -144,6 +151,7 @@ function facebook_like_button_plugin_wp_head() {
 }
 
 function facebook_like_button_plugin_defaults($options) {
+	if (!isset($options['site_og_type'])) $options['site_og_type'] = 'blog';
 	if (!isset($options['show_on_posts'])) $options['show_on_posts'] = true;	
 	if (!isset($options['show_on_pages'])) $options['show_on_pages'] = false;	
 	if (!isset($options['show_on_home'])) $options['show_on_home'] = false;	
@@ -165,7 +173,8 @@ function facebook_like_button_plugin_defaults($options) {
 function facebook_like_button_plugin_options() {
 	if ($_POST["fb_like_button_submit"]) {
 		
-		$submitted_options = array();		
+		$submitted_options = array();				
+		$submitted_options['site_og_type'] = stripslashes($_POST["site_og_type"]);
 		$submitted_options['show_on_posts'] = stripslashes($_POST["show_on_posts"]);
 		$submitted_options['show_on_pages'] = stripslashes($_POST["show_on_pages"]);		
 		$submitted_options['show_on_home'] = stripslashes($_POST["show_on_home"]);
@@ -198,6 +207,16 @@ function facebook_like_button_plugin_options() {
 			<h2>Facebook Like Button Plugin</h2>
 			<h3 class="title">Configuration</h3>				
 			<dl>
+				<dt>
+					Website Type
+				</dt>
+					<dd>
+						<select name="site_og_type">
+							<option value="blog" '. ($options['site_og_type'] == 'blog' ? 'selected="1"' : '') . '>blog</option>
+							<option value="website" '. ($options['site_og_type'] == 'website' ? 'selected="1"' : '') . '>website</option>
+						</select>
+						<span>Information about website type can be found on <a target="_new" href="http://developers.facebook.com/docs/opengraph#types">here</a>. This is only shown on the main page.</span>								
+					</dd>
 				<dt>
 					Show on Home
 				</dt>

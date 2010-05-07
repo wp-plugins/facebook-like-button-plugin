@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=marti
 Tags: facebook, like, socialwidget, social, button
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 
 The new Facebook Like Button. Add and customize the behavior and appearance to you likings.
 
@@ -55,6 +55,10 @@ If no optional parameters are used it will use the values from your saved config
 
 == Changelog ==
 
+= 1.3.2 =
+* Fixed problem with facebook not creating pages.
+* Added meta og:type option for homepage.
+
 = 1.3.1 =
 * Added option to show/hide button on Archive pages.
 
@@ -82,6 +86,12 @@ If no optional parameters are used it will use the values from your saved config
 * First release
 
 == Upgrade Notice ==
+
+= 1.3.2 =
+* Fixed problem with facebook not creating pages.
+* Added meta og:type option for homepage.
+
+Note! its seems like you need to post a comment with the like for facebook to create the page and bind it to your app_id or profile id.
 
 = 1.3.1 =
 * Added option to show/hide button on Archive pages.
