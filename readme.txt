@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=marti
 Tags: facebook, like, socialwidget, social, button
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 
 The new Facebook Like Button. Add and customize the behavior and appearance to you likings.
 
@@ -55,6 +55,12 @@ If no optional parameters are used it will use the values from your saved config
 
 == Changelog ==
 
+= 1.3.3 =
+* Added option to select "both (top & bottom)" on position option.
+* Added one more meta tag, hopefully this fixes the problem with admin and page creation.
+
+!Note automatic linking and/or page creation of pages that has been liked by admin before doesn't work.
+
 = 1.3.2 =
 * Fixed problem with facebook not creating pages.
 * Added meta og:type option for homepage.
@@ -86,6 +92,13 @@ If no optional parameters are used it will use the values from your saved config
 * First release
 
 == Upgrade Notice ==
+
+= 1.3.3 =
+* Added option to select "both (top & bottom)" on position option.
+* Added missing meta tag "og:url", hopefully this fixes the problem with admin and page creation.
+
+!Note - automatic linking and/or page creation of pages that has been liked by admin before doesn't work.
+!Note - When linked old like count gets reset.
 
 = 1.3.2 =
 * Fixed problem with facebook not creating pages.

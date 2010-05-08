@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -82,8 +82,10 @@ function facebook_like_button_plugin_output($out = '') {
 	} else {
 		$iframe = facebook_like_button_plugin_create_iframe($options, get_permalink($post->id));		
 	}
-	
-	if ($options['position'] == 'top') {
+
+	if ($options['position'] == 'both') {
+		$out = $iframe . $out . $iframe;
+	} else if ($options['position'] == 'top') {
 		$out = $iframe . $out;
 	} else {
 		$out .= $iframe;
@@ -133,21 +135,24 @@ function facebook_like_button_plugin_wp_head() {
 		echo '<meta property="fb:app_id" content="'.$options['fb_app_id'].'"/>';		
 	}
 	
-	echo '<meta property="og:site_name" content="'.get_bloginfo('name').'"/>';
-
+	echo '<meta property="og:site_name" content="'.get_bloginfo('name').'"/>';		
+	echo '<meta property="og:url" content="'.get_bloginfo('url').'"/>';
+	
 	if (is_home()) {
-		echo '<meta property="og:type" content="'.$options['site_og_type'].'"/>';
+		echo '<meta property="og:type" content="'.$options['site_og_type'].'"/>';		
 		return;	
 	} 
 	
-	echo '<meta property="og:title" content="'.$post->post_title.'" />';
-
-	if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
-		if ($thumb_id = get_post_meta($post->ID, '_thumbnail_id', true)) {
-			$thumb_meta = wp_get_attachment_image_src($thumb_id);
-			echo '<meta property="og:image" content="'.$thumb_meta[0].'"/>';			
-		}
-	}	
+	if (is_single()) {
+		echo '<meta property="og:title" content="'.$post->post_title.'" />';
+		
+		if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
+			if ($thumb_id = get_post_meta($post->ID, '_thumbnail_id', true)) {
+				$thumb_meta = wp_get_attachment_image_src($thumb_id);
+				echo '<meta property="og:image" content="'.$thumb_meta[0].'"/>';			
+			}
+		}	
+	}
 }
 
 function facebook_like_button_plugin_defaults($options) {
@@ -215,7 +220,7 @@ function facebook_like_button_plugin_options() {
 							<option value="blog" '. ($options['site_og_type'] == 'blog' ? 'selected="1"' : '') . '>blog</option>
 							<option value="website" '. ($options['site_og_type'] == 'website' ? 'selected="1"' : '') . '>website</option>
 						</select>
-						<span>Information about website type can be found on <a target="_new" href="http://developers.facebook.com/docs/opengraph#types">here</a>. This is only shown on the main page.</span>								
+						<span>Information about website type can be found on <a target="_new" href="http://developers.facebook.com/docs/opengraph#types">here</a>.</span>								
 					</dd>
 				<dt>
 					Show on Home
@@ -234,13 +239,13 @@ function facebook_like_button_plugin_options() {
 					Show on Posts
 				</dt>
 					<dd>
-						<input name="show_on_posts" id="param_show_on_posts" value="true" '.($options['show_on_posts'] ? 'checked="1"' : '').' type="checkbox"><label 	for="param_show_on_posts">Show in posts?</label>					
+						<input name="show_on_posts" id="param_show_on_posts" value="true" '.($options['show_on_posts'] ? 'checked="1"' : '').' type="checkbox"><label for="param_show_on_posts">Show in posts?</label>					
 					</dd>
 				<dt>
 					Show on Archive
 				</dt>
 					<dd>
-						<input name="show_on_archive" id="param_show_on_archive" value="true" '.($options['show_on_archive'] ? 'checked="1"' : '').' type="checkbox"><label 	for="param_show_on_posts">Show on archive pages (Category, Tag, Author and Date based pages)?</label>					
+						<input name="show_on_archive" id="param_show_on_archive" value="true" '.($options['show_on_archive'] ? 'checked="1"' : '').' type="checkbox"><label for="param_show_on_archive">Show on archive pages (Category, Tag, Author and Date based pages)?</label>					
 					</dd>
 				<dt>
 					Position
@@ -249,6 +254,7 @@ function facebook_like_button_plugin_options() {
 						<select name="position">
 							<option value="bottom" '. ($options['position'] == 'bottom' ? 'selected="1"' : '') . '>bottom</option>
 							<option value="top" '. ($options['position'] == 'top' ? 'selected="1"' : '') . '>top</option>
+							<option value="both" '. ($options['position'] == 'both' ? 'selected="1"' : '') . '>both</option>
 						</select>
 						<span>Where to display the button in relation to Post/Page.</span>
 					</dd>
@@ -463,7 +469,7 @@ function facebook_like_button_plugin_options() {
 				</dt>
 					<dd>
 						<input name="fb_admins" id="param_fb_admins" value="'.$options['fb_admins'].'" class="regular-text" type="text">
-						<span>Comma-separated list of the user IDs or usernames of the Facebook accounts who own the page. More <a href="http://developers.facebook.com/docs/opengraph">info on administering</a>, check the "Administering your page" section</span>
+						<span>Comma-separated list of the user IDs of the Facebook accounts who own the page. More <a href="http://developers.facebook.com/docs/opengraph">info on administering</a>, check the "Administering your page" section</span>
 						<p><a target="_new" href="http://www.facebook.com/pages/manage/">Pages You Admin</a></p>
 					</dd>										
 				<dt>
