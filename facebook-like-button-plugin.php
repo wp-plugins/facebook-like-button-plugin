@@ -3,7 +3,7 @@
  * Plugin Name: Facebook Like Button Plugin
  * Plugin URI: http://martinj.net/wordpress-plugins/facebook-like-button
  * Description: The new Facebook like button.
- * Version: 1.3.3
+ * Version: 1.3.4
  * Author: Martin Jonsson
  * Author URI: http://martinj.net
  *
@@ -136,7 +136,7 @@ function facebook_like_button_plugin_wp_head() {
 	}
 	
 	echo '<meta property="og:site_name" content="'.get_bloginfo('name').'"/>';		
-	echo '<meta property="og:url" content="'.get_bloginfo('url').'"/>';
+	echo '<meta property="og:url" content="http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'"/>';
 	
 	if (is_home()) {
 		echo '<meta property="og:type" content="'.$options['site_og_type'].'"/>';		
